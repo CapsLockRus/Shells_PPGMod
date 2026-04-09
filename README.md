@@ -1,5 +1,5 @@
 # Shells_PPGMod
-Source code of a steam mod for a non-licensed game version. Steam version: https://steamcommunity.com/sharedfiles/filedetails/?id=3693113302
+Source code of a steam mod for a non-licenced game version. Steam version: https://steamcommunity.com/sharedfiles/filedetails/?id=3693113302
 
 # Downloading and installing:
 1) download the zip file with sources:
