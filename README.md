@@ -3,7 +3,7 @@ Source code of a steam mod for a non-licensed game version. Steam version: https
 
 # Downloading and installing:
 1) download the zip file with sources:
-<img width="731" height="554" alt="image" src="https://github.com/user-attachments/assets/d5d0f16f-1204-4cef-ab82-b44d742315ee" />
+<img width="360" height="275" alt="image" src="https://github.com/user-attachments/assets/d5d0f16f-1204-4cef-ab82-b44d742315ee" />
 
 2) extract it to 'wherever you installed your game\People Playground\Mods' folder
 <img width="1170" height="1075" alt="image" src="https://github.com/user-attachments/assets/15b6dc5b-97df-478c-a436-2a6a7d4fd140" />
