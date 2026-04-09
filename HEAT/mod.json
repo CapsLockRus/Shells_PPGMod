@@ -1,0 +1,31 @@
+{
+  "Name": "Shells++",
+  "Author": "Mr. Kosher",
+  "Description": "Adds different types of munition",
+  "ModVersion": "1.2",
+  "GameVersion": "1.27.5",
+  "ThumbnailPath": "thumb11.png",
+  "EntryPoint": "Mod.Mod",
+  "Tags": [
+    "Fun",
+    "Realistic"
+  ],
+  "Scripts": [
+    "script.cs",
+    "JetDamage.cs",
+    "HEATBehaviour.cs",
+    "ChargeBehaviour.cs",
+    "ERABehaviour.cs",
+    "RPGChargeBehaviour.cs",
+    "HEBehaviour.cs",
+    "ThermoBehaviour.cs",
+    "ConnectBehaviour.cs",
+    "AutocannonBehaviour.cs",
+    "PseudoAPBehaviour.cs",
+    "GPSBehaviour.cs"
+  ],
+  "Active": true,
+  "UGCIdentity": null,
+  "CreatorUGCIdentity": "3693113302",
+  "AssemblyName": null
+}
