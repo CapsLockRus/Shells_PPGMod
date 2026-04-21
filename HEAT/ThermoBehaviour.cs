@@ -214,7 +214,7 @@ public class ThermoBehaviour : MonoBehaviour
         Queue<Vector2> queue = new Queue<Vector2>();
 
         float step = 1f;     // плотность газа
-        float radius = 4f;    // радиус облака
+        float radius = 5f;    // радиус облака
 
         Vector2 origin = transform.position;
 

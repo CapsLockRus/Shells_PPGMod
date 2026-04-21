@@ -45,8 +45,7 @@ using UnityEngine.Events;
         
         ActOnShot shot;
         
-        HashSet<PhysicalBehaviour> linkedBodies =
-            new HashSet<PhysicalBehaviour>();
+        HashSet<PhysicalBehaviour> connected = new HashSet<PhysicalBehaviour>();
 
         
         bool initialized = false;
@@ -219,17 +218,6 @@ using UnityEngine.Events;
 
         LayerMask mask = LayerMask.GetMask("Objects");
         
-        public void OnPhaseLinkCreated(LinkDeviceBehaviour link)
-        {
-            if (link == null)
-                return;
-
-            
-            if (link.Other != null)
-            {
-                linkedBodies.Add(link.Other);
-            }
-        }
         
         void FixedUpdate()
         {
@@ -254,7 +242,13 @@ using UnityEngine.Events;
                     
                     if (Mathf.Abs(hitRb.velocity.magnitude - rb.velocity.magnitude) < 10f) return;
                     
-                    if (hitPhys != null && linkedBodies.Contains(hitPhys)) return;
+                    connected = phys
+                        .GetComponents<PhaseLinkBehaviour>()
+                        .Where(l => l.Other != null)
+                        .Select(l => l.Other)
+                        .ToHashSet();
+                    
+                    if (hitPhys != null && connected.Contains(hitPhys)) return;
                     
                     var col = hit.normal;
                     if (rb.velocity.magnitude > 15f)

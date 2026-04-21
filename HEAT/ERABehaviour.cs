@@ -24,20 +24,28 @@ public class ERABehaviour : MonoBehaviour
         
         phys = GetComponent<PhysicalBehaviour>();
     }
-
+/*
+    public void Use(ActivationPropagation ap)
+    {
+        if (ap.Channel == ActivationPropagation.Blue)
+        {
+            Explode();
+        }
+    }
+*/
     void FixedUpdate()
     {
-        if (phys.Temperature > 800f || phys.OnFire) Explode();
+        if (phys.Temperature > 800f || phys.OnFire) ExplodeERA();
     }
 
     private void OnCollisionEnter2D(Collision2D col)
     {
         if (col.collider.GetComponent<HEATBehaviour>() != null) return;
         float force = col.relativeVelocity.magnitude;
-        if (force > 500f) Explode();
+        if (force > 500f) ExplodeERA();
     }
 
-    public void Explode()
+    public void ExplodeERA()
     {
         ExplosionCreator.Explode(transform.position, power);
         Destroy(gameObject);

@@ -53,8 +53,8 @@ public class HEBehaviour : MonoBehaviour, Messages.IUse
     public float randomSpread = 0.7f;
     
     LayerMask mask = LayerMask.GetMask("Objects");
-    HashSet<PhysicalBehaviour> linkedBodies =
-        new HashSet<PhysicalBehaviour>();
+    
+    //HashSet<PhysicalBehaviour> connected = new HashSet<PhysicalBehaviour>();
     
     void Awake()
     {
@@ -212,18 +212,6 @@ public class HEBehaviour : MonoBehaviour, Messages.IUse
         }
     }
     
-    public void OnPhaseLinkCreated(LinkDeviceBehaviour link)
-    {
-        if (link == null)
-            return;
-
-            
-        if (link.Other != null)
-        {
-            linkedBodies.Add(link.Other);
-        }
-    }
-
     private void FixedUpdate()
     {
         if (isWaiting)
@@ -484,7 +472,7 @@ public class HEBehaviour : MonoBehaviour, Messages.IUse
 
         sp.sprite = Mod.PicrelGrey;
 
-        //fragment.FixColliders();
+        fragment.FixColliders();
 
         var phys =
             fragment.GetComponent<PhysicalBehaviour>();
@@ -538,6 +526,8 @@ public class HEBehaviour : MonoBehaviour, Messages.IUse
 
             lineF.endColor =
                 new Color(1f, 0.3f, 0f, 0f);
+            
+            transform.localScale = new Vector2(0.5f, 0.5f);
         }
         private void Update()
         {
