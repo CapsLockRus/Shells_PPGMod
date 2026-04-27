@@ -574,7 +574,6 @@ namespace Mod
                         behaviour.frontAttach = front.transform;
 
                         var air = Instance.AddComponent<AirfoilBehaviour>();
-
                     }
                 }
             );
@@ -963,8 +962,7 @@ namespace Mod
                         Instance.GetComponent<SpriteRenderer>().sprite = AP25mm;
                         
                         Instance.AddComponent<PseudoAPBehaviour>();
-
-                        Instance.FixColliders();
+                        
                         var phys = Instance.GetComponent<PhysicalBehaviour>();
 
                         phys.ForceContinuous = true;
@@ -984,6 +982,9 @@ namespace Mod
                         APLauncher.ShockwaveIntensity = 0f;
                         phys.Selectable = false;
                         phys.Deletable = false;
+                        
+                        var audio = Instance.GetComponent<AudioSource>();
+                        GameObject.Destroy(audio);
                     }
                 }
             );
@@ -1087,6 +1088,8 @@ namespace Mod
                             launcher = Instance.AddComponent<ProjectileLauncherBehaviour>();
                         }
                         
+                        
+                        
                         launcher.projectileAsset = ModAPI.FindSpawnable("HE_shell_25mm_bushmaster");
                         var phys = Instance.GetComponent<PhysicalBehaviour>();
 
@@ -1096,13 +1099,16 @@ namespace Mod
                         launcher.ScreenShake = 0.5f;
                         launcher.recoilMultiplier = 0.05f;
                         launcher.projectileLaunchStrength = 100f;
-                        launcher.barrelDirection = Instance.transform.right;
+                        launcher.barrelDirection = Vector2.right;
                         launcher.barrelPosition = new Vector2(1.63f, 0.0f);
                         
                         launcher.launchSound = BushmasterIAudio;
                         Instance.GetComponent<PhysicalBehaviour>().InitialMass = 15f;
                         Instance.GetComponent<PhysicalBehaviour>().TrueInitialMass = 15f;
                         Instance.GetComponent<PhysicalBehaviour>().rigidbody.mass = 5f;
+                        
+                        var firesystem = Instance.GetComponentsInChildren<ParticleSystem>().FirstOrDefault(p => p.gameObject.name == "Tank muzzle flash Variant");
+                        firesystem.transform.localPosition = new Vector3(1.6f, 0, 0);
                         
                         var behaviour = Instance.AddComponent<AutocannonBehaviour>();
 

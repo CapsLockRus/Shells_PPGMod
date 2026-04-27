@@ -22,12 +22,19 @@ public class AutocannonBehaviour : MonoBehaviour, Messages.IUse
 
     private SpawnableAsset apShell;
     private SpawnableAsset heShell;
+    
+    private ParticleSystem firesystem;
+    private ParticleSystem.EmissionModule fuckingRetardedUnityStructure;
 
     private void Start()
     {
         
         apShell = ModAPI.FindSpawnable("AP_shell_25mm_bushmaster");
         heShell = ModAPI.FindSpawnable("HE_shell_25mm_bushmaster");
+        
+        firesystem = GetComponentsInChildren<ParticleSystem>().FirstOrDefault(p => p.gameObject.name == "Tank muzzle flash Variant");
+        //fuckingRetardedUnityStructure = firesystem.emission;
+        //fuckingRetardedUnityStructure.enabled = false;
         
         phys = GetComponent<PhysicalBehaviour>();
         projectileLauncher = GetComponent<ProjectileLauncherBehaviour>();
@@ -56,6 +63,14 @@ public class AutocannonBehaviour : MonoBehaviour, Messages.IUse
                 new DialogButton("Cancel", true, (UnityAction)(() => dialog.Close())));
         }));
         projectileLauncher.AutomaticInterval = 60f/RPM;
+        projectileLauncher.projectileAsset = isAP ? apShell : heShell;
+
+        projectileLauncher.OnLaunch += PlayFX;
+    }
+
+    private void PlayFX(object? o, GameObject f)
+    {
+        firesystem.Play();
     }
 
     private void Awake()
@@ -87,8 +102,11 @@ public class AutocannonBehaviour : MonoBehaviour, Messages.IUse
                 ) *
                 Vector2.right;
             projectileLauncher.barrelDirection = dir;
+            
+            firesystem.Play(true);
         }
         */
+        
         if (ap.Channel == ActivationPropagation.Red)
         {
             ChangeAmmoType();
@@ -97,8 +115,7 @@ public class AutocannonBehaviour : MonoBehaviour, Messages.IUse
 
     public void FixedUpdate()
     {
-        if (!projectileLauncher.isActiveAndEnabled)
-            return;
+        if (!projectileLauncher.isActiveAndEnabled) return;
 
         randomSpread = RPM / 240f;
         localAngle =
@@ -106,32 +123,19 @@ public class AutocannonBehaviour : MonoBehaviour, Messages.IUse
                 -randomSpread,
                 randomSpread
             );
-        Vector2 dir =
-            Quaternion.Euler(
-                0,
-                0,
-                localAngle
-            ) *
-            Vector2.right;
+        Vector2 dir = Quaternion.Euler(0, 0, localAngle) * Vector2.right;
         projectileLauncher.barrelDirection = dir;
     }
+    
 
     void ChangeAmmoType()
     {
         isAP = !isAP;
-        if (isAP)
-        {
-            projectileLauncher.projectileAsset = apShell;
-            projectileLauncher.ScreenShake = 0.5f;
-            projectileLauncher.recoilMultiplier = 0.05f;
-            projectileLauncher.projectileLaunchStrength = 100f;
-        }
-        else
-        {
-            projectileLauncher.projectileAsset = heShell;
-            projectileLauncher.ScreenShake = 0.5f;
-            projectileLauncher.recoilMultiplier = 0.05f;
-            projectileLauncher.projectileLaunchStrength = 100f;
-        }
+        if (isAP) projectileLauncher.projectileAsset = apShell;
+        else projectileLauncher.projectileAsset = heShell;
+        
+        projectileLauncher.ScreenShake = 0.5f;
+        projectileLauncher.recoilMultiplier = 0.05f;
+        projectileLauncher.projectileLaunchStrength = 100f;
     }
 }

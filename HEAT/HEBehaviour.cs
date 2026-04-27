@@ -20,6 +20,8 @@ public class HEBehaviour : MonoBehaviour, Messages.IUse
 
     public Sprite armedS;
     public Sprite unarmedS;
+
+    public bool isFlamed = true;
     
     public bool alwaysArmed = false;
         
@@ -101,6 +103,16 @@ public class HEBehaviour : MonoBehaviour, Messages.IUse
                 }),
                 new DialogButton("Cancel", true, (UnityAction)(() => dialog.Close())));
         }));
+        physicalBehaviour.ContextMenuOptions.Buttons.Add(new ContextMenuButton("setFlammability", "Set Explode On Heated", "Set Explode On Temperature", () => {
+            DialogBox dialog = (DialogBox)null;
+            dialog = DialogBoxManager.TextEntry("Change whether the shell should explode when heated\n<color=green><size=26>Current: +" + isFlamed+ "</size></color>", "placeholder, this field doesn't do anything", new DialogButton("Enable", true, new UnityAction[1] {
+                    (UnityAction)(() =>
+                    {
+                        isFlamed = true;
+                    })
+                }),
+                new DialogButton("Disable", true, (UnityAction)(() => isFlamed = false)));
+        }));
         
     }
     
@@ -149,6 +161,8 @@ public class HEBehaviour : MonoBehaviour, Messages.IUse
         shot.CartridgeDamageThreshold = 20f;
         
         var physicalBehaviour = GetComponent<PhysicalBehaviour>();
+
+        phys.Properties = ModAPI.FindPhysicalProperties("Flammable metal");
 
     }
 
@@ -230,7 +244,7 @@ public class HEBehaviour : MonoBehaviour, Messages.IUse
             if (transform.position.y <= airbustHeight && armed) Detonate();
         }
 
-        if (phys != null && (phys.Temperature > 400f))
+        if (phys != null && (phys.Temperature > 400f) && isFlamed)
         {
             if (force < 3f)
             {

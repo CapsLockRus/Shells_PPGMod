@@ -14,36 +14,15 @@ using static UnityEngine.ParticleSystem;
 public class PseudoAPBehaviour : MonoBehaviour
 {
     private float time = 0f;
-    private float localAngle = 0f;
-    private float randomSpread;
-    public int RPM;
-
     private void Start()
     {
-        /*
-        randomSpread = 
-        localAngle +=
-            UnityEngine.Random.Range(
-                -randomSpread,
-                randomSpread
-            );
-
-        Vector2 dir =
-            Quaternion.Euler(
-                0,
-                0,
-                localAngle
-            ) *
-            Vector2.right;
-            */
-        
         var APLauncher = GetComponent<MachineGunBehaviour>();
         APLauncher.barrelDirection = Vector2.right;
         APLauncher.barrelPosition = new Vector2(0.1f, 0f);
         APLauncher.Effect.transform.localPosition = APLauncher.barrelPosition;
         gameObject.layer = LayerMask.NameToLayer("Debris");
         APLauncher.Use(new ActivationPropagation());
-        GetComponent<SpriteRenderer>().sprite = Mod.PicrelAP;
+        GetComponent<SpriteRenderer>().sprite = null;
     }
 
     private void Update()

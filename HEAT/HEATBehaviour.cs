@@ -24,6 +24,8 @@ using UnityEngine.Events;
         public float maxPen = 500f;
 
         public bool _isTandem = false;
+        
+        public bool isFlamed = true;
 
         [SerializeField]
         public Sprite armedS;
@@ -45,7 +47,7 @@ using UnityEngine.Events;
         
         ActOnShot shot;
         
-        HashSet<PhysicalBehaviour> connected = new HashSet<PhysicalBehaviour>();
+        HashSet<PhysicalBehaviour> linkedBodies = new HashSet<PhysicalBehaviour>();
 
         
         bool initialized = false;
@@ -94,6 +96,16 @@ using UnityEngine.Events;
                     }),
                     new DialogButton("Cancel", true, (UnityAction)(() => dialog.Close())));
             }));
+            physicalBehaviour.ContextMenuOptions.Buttons.Add(new ContextMenuButton("setFlammability", "Set Explode On Heated", "Set Explode On Temperature", () => {
+                DialogBox dialog = (DialogBox)null;
+                dialog = DialogBoxManager.TextEntry("Change whether the shell should explode when heated\n<color=green><size=26>Current: +" + isFlamed+ "</size></color>", "placeholder, this field doesn't do anything", new DialogButton("Enable", true, new UnityAction[1] {
+                        (UnityAction)(() =>
+                        {
+                            isFlamed = true;
+                        })
+                    }),
+                    new DialogButton("Disable", true, (UnityAction)(() => isFlamed = false)));
+            }));
         }
 
         void Start()
@@ -101,6 +113,9 @@ using UnityEngine.Events;
             Invoke(nameof(Init), 0f);
             
             rb =  GetComponent<Rigidbody2D>();
+            
+            ModAPI.OnLinkCreated += OnLinkCreatedHandler;
+            ModAPI.OnLinkDestroyed += OnLinkKilledHandler;
             
             switch (maxPen)
             {
@@ -139,7 +154,28 @@ using UnityEngine.Events;
 
             shot = GetComponent<ActOnShot>();
             shot.Actions.AddListener(Shot);
+        }
 
+        void OnLinkCreatedHandler(object? sender, LinkDeviceBehaviour link)
+        {
+            PhysicalBehaviour A = link.GetComponent<PhysicalBehaviour>();
+            PhysicalBehaviour B = link.Other;
+
+            if (A != phys && B != phys) return;
+
+            if (A == phys) linkedBodies.Add(B);
+            else if (B == phys) linkedBodies.Add(A);
+        }
+
+        void OnLinkKilledHandler(object? sender, LinkDeviceBehaviour link)
+        {
+            PhysicalBehaviour A = link.GetComponent<PhysicalBehaviour>();
+            PhysicalBehaviour B = link.Other;
+
+            if (A != phys && B != phys) return;
+        
+            if(A == phys) linkedBodies.Remove(B);
+            else if (B == phys) linkedBodies.Remove(A);
         }
 
         void Init()
@@ -240,18 +276,14 @@ using UnityEngine.Events;
                     var hitRb = hit.collider.GetComponent<Rigidbody2D>();
                     var hitPhys = hit.collider.GetComponent<PhysicalBehaviour>();
                     
+                    if(!hitRb || !hitPhys) return;
+                    
                     if (Mathf.Abs(hitRb.velocity.magnitude - rb.velocity.magnitude) < 10f) return;
                     
-                    connected = phys
-                        .GetComponents<PhaseLinkBehaviour>()
-                        .Where(l => l.Other != null)
-                        .Select(l => l.Other)
-                        .ToHashSet();
-                    
-                    if (hitPhys != null && connected.Contains(hitPhys)) return;
+                    if (linkedBodies.Contains(hitPhys)) return;
                     
                     var col = hit.normal;
-                    if (rb.velocity.magnitude > 15f)
+                    if (rb.velocity.magnitude > 25f)
                     {
                         float angle = Vector2.Angle(transform.right, -col);
                         if (Mathf.Sign(transform.lossyScale.x) == 1)
@@ -265,9 +297,9 @@ using UnityEngine.Events;
                 }
             }
 
-            if (phys != null && (phys.Temperature > detonationTemp))
+            if (phys != null && (phys.Temperature > detonationTemp) && isFlamed)
             {
-                ExplosionCreator.Explode(transform.position, 3f);
+                ExplosionCreator.Explode(transform.position, power);
                 Destroy(gameObject);
             }
         }
