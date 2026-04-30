@@ -63,6 +63,13 @@ using UnityEngine.Events;
                 return;
             }
             var physicalBehaviour = GetComponent<PhysicalBehaviour>();
+            
+            var buttons = physicalBehaviour.ContextMenuOptions.Buttons;
+
+            bool exists = buttons.Any(b => b.Identity == "setPenetration");
+
+            if (exists) return;
+            
             physicalBehaviour.ContextMenuOptions.Buttons.Add(new ContextMenuButton(
                 "toggleArmed",
                 "Arm / Disarm",

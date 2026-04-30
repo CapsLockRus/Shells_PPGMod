@@ -69,6 +69,13 @@ public class HEBehaviour : MonoBehaviour, Messages.IUse
             return;
         }
         var physicalBehaviour = GetComponent<PhysicalBehaviour>();
+        
+        var buttons = physicalBehaviour.ContextMenuOptions.Buttons;
+
+        bool exists = buttons.Any(b => b.Identity == "setDelay");
+
+        if (exists) return;
+        
         physicalBehaviour.ContextMenuOptions.Buttons.Add(new ContextMenuButton(
             "toggleArmed",
             "Arm / Disarm",
@@ -288,20 +295,20 @@ public class HEBehaviour : MonoBehaviour, Messages.IUse
         if (_triggered) return;
 
         float force = col.relativeVelocity.magnitude;
-        if (force < 5f)
+        if (force < 10f)
         {
             return; // чувствительность взрывателя (опять)
         }
 
         //float sector = 90f;
-        if (rb.velocity.magnitude < 10f)
+        if (rb.velocity.magnitude < 30f)
         {
             float angle = Vector2.Angle(transform.right, -col.contacts[0].normal);
-            if (Mathf.Sign(transform.lossyScale.x) == 1)
+            if (Math.Sign(transform.lossyScale.x) == 1)
             {
-                if (angle > 90f) return;
+                if (angle > 70f) return;
             }
-            else if (angle < 90f || angle > 270f) return;
+            else if (angle < 110f || angle > 250f) return;
         }
 
         Detonate();
