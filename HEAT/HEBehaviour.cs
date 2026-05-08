@@ -455,7 +455,7 @@ public class HEBehaviour : MonoBehaviour, Messages.IUse
         
         var obj = ModAPI.FindSpawnable("Crossbow Bolt");
 
-        var fragment = Instantiate(obj.Prefab.gameObject, position + dir * 0.3f, Quaternion.identity
+        var fragment = Instantiate(obj.Prefab.gameObject, position + dir * 0.4f, Quaternion.identity
         );
         
         fragment.name = "Fragment HE {NON-INTER}";
@@ -468,7 +468,7 @@ public class HEBehaviour : MonoBehaviour, Messages.IUse
         rb.gravityScale = 0.1f;
 
         float speed =
-            UnityEngine.Random.Range(35f, 45f);
+            UnityEngine.Random.Range(45f, 60f);
 
         rb.velocity = dir.normalized * speed;
         
@@ -498,17 +498,29 @@ public class HEBehaviour : MonoBehaviour, Messages.IUse
         var phys =
             fragment.GetComponent<PhysicalBehaviour>();
 
-        phys.StabWoundSizeMultiplier = 3f;
+        phys.StabWoundSizeMultiplier = 0.8f;
         phys.ForceContinuous = true;
-        phys.Temperature = 100f;
+        phys.Temperature = 100f;    //       да ебаный рот блять какого хуя эти осколки 0 урона наносят
         phys.TrueInitialMass = 0.1f;
         phys.InitialMass = 0.1f;
         phys.DisplayBloodDecals = false;
         phys.HasOutline = false;
+        
         phys.StabCausesWound = true;
         phys.SpawnSpawnParticles = false;
         phys.Selectable = false;
 
+        phys.Properties.Sharp = true;
+        phys.Properties.SharpAxes = new SharpAxis[]
+        {
+            new SharpAxis(Vector2.right, -0.1f, 0.1f, true, true),
+            new SharpAxis(Vector2.left, -0.1f, 0.1f, true, true),
+            new SharpAxis(Vector2.down, -0.1f, 0.1f, true, true),
+            new SharpAxis(Vector2.up, -0.1f, 0.1f, true, true),
+        };
+        phys.Properties.SharpForceThresholdMultiplier = 0.01f;
+        phys.Properties.IgnoreStabResistance = true;
+        
         rb.mass = 0.1f;
 
         var beh =
@@ -548,7 +560,7 @@ public class HEBehaviour : MonoBehaviour, Messages.IUse
             lineF.endColor =
                 new Color(1f, 0.3f, 0f, 0f);
             
-            transform.localScale = new Vector2(0.5f, 0.5f);
+            transform.localScale = new Vector2(Mathf.Sqrt(UnityEngine.Random.value), Mathf.Sqrt(UnityEngine.Random.value));
         }
         private void Update()
         {

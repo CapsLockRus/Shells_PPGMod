@@ -82,7 +82,7 @@ namespace Mod
                         var eraBeh = colla.gameObject.GetComponent<ERABehaviour>();
                         if (eraBeh != null)
                         {
-                            eraBeh.Explode();
+                            eraBeh.ExplodeERA();
                             penetration -= 3000;
                             continue;
                         }
@@ -99,7 +99,7 @@ namespace Mod
 
                         penetration -= resistance * subStep * 75f;
                         phys.Ignite(true);
-                        phys.Temperature += 10000f * Time.deltaTime;
+                        phys.Temperature += 2000f * Time.deltaTime;
                         phys.rigidbody.AddForce(direction * (10000f * Time.deltaTime));
 
                         if (penetration <= 0f)
@@ -177,6 +177,13 @@ namespace Mod
             phys.Selectable = false;
             rb.mass = 0.01f;
             //prop.Sharp = true;
+            
+            phys.Properties.Sharp = true;
+            phys.Properties.SharpAxes = new SharpAxis[]
+            {
+                new SharpAxis(Vector2.up, -1f, 1f, true, true),
+            };
+            
             var beh = fragment.AddComponent<FragmentRay>();
             sp.material = ModAPI.FindMaterial("VeryBright");
             sp.color = new Color(1f, 1f, 1f, 0.2f);
@@ -234,6 +241,8 @@ namespace Mod
             }
         }
 
+        
+        // TODO: change name checks to material checks
         float GetResistance(Collider2D col)
         {
             var name = col.gameObject.name;

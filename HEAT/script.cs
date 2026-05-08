@@ -59,6 +59,11 @@ namespace Mod
         public static Sprite Howitzer155mmUnarmed;
         public static Sprite M777ExcaliburFins;
         public static Sprite M777ExcaliburThumb;
+        public static Sprite RefConcrete;
+        public static Sprite RefConcreteP1;
+        public static Sprite RefConcreteP2;
+        public static Sprite RefConcreteP3;
+        public static Sprite RefConcreteP4;
         public static AudioClip BushmasterIAudio;
 
         //public static Sprite JetSprite;
@@ -119,13 +124,16 @@ namespace Mod
             M777ExcaliburFins = ModAPI.LoadSprite("sprites/M777_Excalibur_fins.png");
             M777ExcaliburThumb = ModAPI.LoadSprite("sprites/M777_Excalibur_thumb.png");
             RPGChargeSprite1 = ModAPI.LoadSprite("sprites/RPG_charge_1.png");
+            RefConcrete = ModAPI.LoadSprite("sprites/reinforced_concrete.png");
+            RefConcreteP1 = ModAPI.LoadSprite("sprites/reinforced_concrete_P1.png");
+            RefConcreteP2 = ModAPI.LoadSprite("sprites/reinforced_concrete_P2.png");
+            RefConcreteP3 = ModAPI.LoadSprite("sprites/reinforced_concrete_P3.png");
+            RefConcreteP4 = ModAPI.LoadSprite("sprites/reinforced_concrete_P4.png");
         }
 
         public static void OnUnload()
         {
         }
-
-
 
         public static void Main()
         {
@@ -1003,6 +1011,23 @@ namespace Mod
                                }
                             */
             ModAPI.Register(
+                new Modification()
+                {
+                    OriginalItem = ModAPI.FindSpawnable("Stone Brick Wall"),
+                    NameOverride = $"{ModTag} Reinforced Concrete Slab",
+                    NameToOrderByOverride = "іі",
+                    DescriptionOverride = "Concrete reinforced with steel, can withstand much more than any other building material",
+                    CategoryOverride = ModAPI.FindCategory("Shells++"),
+                    ThumbnailOverride = RefConcrete,
+                    AfterSpawn = (Instance) =>
+                    {
+                        Instance.GetComponent<SpriteRenderer>().sprite = RefConcrete;
+                        Instance.FixColliders();
+                        Instance.AddComponent<ReinforcedConcreteThing>();
+                    }
+                }
+            );
+            ModAPI.Register(
 				new Modification()
 				{
                     OriginalItem = ModAPI.FindSpawnable("Holographic Display"),
@@ -1212,7 +1237,4 @@ namespace Mod
                  });
         }
     }
-
-
-    
 }
